@@ -2,9 +2,10 @@ package com.apress.gerber.reminders;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 public class RemindersSimpleCursorAdapter extends SimpleCursorAdapter {
     public RemindersSimpleCursorAdapter(Context context, int layout, Cursor c,
