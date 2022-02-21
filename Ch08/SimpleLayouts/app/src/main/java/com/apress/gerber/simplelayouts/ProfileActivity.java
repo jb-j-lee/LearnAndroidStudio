@@ -1,13 +1,14 @@
 package com.apress.gerber.simplelayouts;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ProfileActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ProfileActivity extends AppCompatActivity {
     private TextView name;
     private TextView location;
     private TextView website;
