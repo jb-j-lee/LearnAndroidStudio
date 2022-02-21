@@ -2,14 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.apress.gerber.reminders.app.RemindersActivity" >
+    tools:context="com.apress.gerber.reminders.app.RemindersActivity">
 
-    <item android:id="@+id/action_new"
-        android:title="@string/new_reminder"
+    <item
+        android:id="@+id/action_new"
         android:orderInCategory="100"
+        android:title="@string/new_reminder"
         app:showAsAction="never" />
-    <item android:id="@+id/action_exit"
-        android:title="@string/exit"
+    <item
+        android:id="@+id/action_exit"
         android:orderInCategory="200"
+        android:title="@string/exit"
         app:showAsAction="never" />
 </menu>

@@ -1,13 +1,33 @@
-package com.apress.gerber.reminders;
+package com.apress.gerber.reminders
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ * [Testing Fundamentals](http://d.android.com/tools/testing/testing_android.html)
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-    public ApplicationTest() {
-        super(Application.class);
+@RunWith(AndroidJUnit4::class)
+internal class ReminderInstrumentedTest {
+    @Test
+    fun useAppContext() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.apress.gerber.reminders", appContext.packageName)
     }
+
+//    @Test
+//    fun insertTest() {
+//        // Context of the app under test.
+//        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+//
+//        val max = 10
+//        for (i: Int in 1..max) {
+//            val item = Reminder(i, "TEST$i", i % 2)
+//            ReminderDatabase.getInstance(appContext)?.reminderDao()?.insert(item)
+//            var returnItem = ReminderDatabase.getInstance(appContext)?.reminderDao()?.selectById(item._id)
+//            assertEquals(item, returnItem)
+//        }
+//    }
 }
