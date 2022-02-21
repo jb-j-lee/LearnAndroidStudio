@@ -1,78 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/profile_image"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:src="@drawable/my_profile"
-        android:layout_marginLeft="5dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clifton Craig"
-        android:id="@+id/name"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_toEndOf="@+id/profile_image"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginStart="5dp"
+        android:src="@drawable/my_profile" />
 
     <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="California"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/profile_image"
+        android:text="Clifton Craig" />
+
+    <TextView
         android:id="@+id/location"
-        android:layout_below="@+id/name"
-        android:layout_toRightOf="@+id/profile_image"
-        android:layout_toEndOf="@+id/profile_image"
-        android:layout_marginLeft="5dp"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="http://codeforfun.wordpress.com"
-        android:id="@+id/website"
-        android:layout_below="@+id/location"
-        android:layout_toRightOf="@+id/profile_image"
+        android:layout_below="@+id/name"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/profile_image"
-        android:layout_marginLeft="5dp"/>
+        android:text="California" />
+
+    <TextView
+        android:id="@+id/website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/profile_image"
+        android:text="http://codeforfun.wordpress.com" />
 
     <LinearLayout
         android:id="@+id/details"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/website"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="5dp">
+        android:layout_marginStart="5dp"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/online_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Online"
-            android:id="@+id/online_status"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Online" />
 
         <EditText
+            android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/description"
-            android:text="Likes biking, reads tech manuals and loves to code in Java"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginStart="5dp"
+            android:text="Likes biking, reads tech manuals and loves to code in Java" />
     </LinearLayout>
 
     <include
         layout="@layout/three_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/details"/>
+        android:layout_below="@id/details" />
 
 </RelativeLayout>
