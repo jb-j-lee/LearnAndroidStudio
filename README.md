@@ -4,7 +4,7 @@
 
 Overview
 ---
-> Reminders (SQLite + SimpleCursorAdapter) -> Room + Coroutin + MVVM
+> Reminders (SQLite + SimpleCursorAdapter) -> ***Room + Coroutin + MVVM***
 - Ch05.zip
 - Ch06.zip
 > SimpleLayouts (Fragment) -> phone / tablet UI
