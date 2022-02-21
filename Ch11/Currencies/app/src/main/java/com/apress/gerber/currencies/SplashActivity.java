@@ -1,9 +1,7 @@
 package com.apress.gerber.currencies;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
@@ -14,10 +12,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class SplashActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SplashActivity extends AppCompatActivity {
 
     // 우리 앱에서 사용되는 통화 코드를 가져올 url
-    public static final String URL_CODES = "http://openexchangerates.org/api/currencies.json";
+    public static final String URL_CODES = "https://openexchangerates.org/api/currencies.json";
     public static final String KEY_ARRAYLIST = "key_arraylist";
 
     // 가져온 통화 코드를 저장하고 MainActivity에 전달할 ArrayList
@@ -48,7 +48,7 @@ public class SplashActivity extends Activity {
                 String key = "";
                 mCurrencies = new ArrayList<String>();
                 while (iterator.hasNext()) {
-                    key = (String)iterator.next();
+                    key = (String) iterator.next();
                     mCurrencies.add(key + " | " + jsonObject.getString(key));
                 }
 

@@ -4,13 +4,14 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class JSONParser {
 
@@ -18,13 +19,14 @@ public class JSONParser {
     static JSONObject sReturnJsonObject = null;
     static String sRawJsonString = "";
 
-    public JSONParser() {}
+    public JSONParser() {
+    }
 
     public JSONObject getJSONFromUrl(String url) {
 
         try {
             URL surl = new URL(url);
-            HttpURLConnection urlConnection = (HttpURLConnection) surl.openConnection();
+            HttpsURLConnection urlConnection = (HttpsURLConnection) surl.openConnection();
             sInputStream = urlConnection.getInputStream();
         } catch (IOException e) {
             e.printStackTrace();

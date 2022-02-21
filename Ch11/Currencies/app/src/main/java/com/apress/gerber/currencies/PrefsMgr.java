@@ -8,7 +8,7 @@ public class PrefsMgr {
 
     private static SharedPreferences sSharedPreferences;
 
-    public static void setString(Context context, String locale, String code ){
+    public static void setString(Context context, String locale, String code) {
         sSharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sSharedPreferences.edit();
@@ -16,7 +16,7 @@ public class PrefsMgr {
         editor.commit();
     }
 
-    public static String getString(Context context, String locale){
+    public static String getString(Context context, String locale) {
         sSharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
         return sSharedPreferences.getString(locale, null);
