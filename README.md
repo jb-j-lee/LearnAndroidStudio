@@ -4,10 +4,10 @@
 
 Overview
 ---
-> Reminders (SQLite + SimpleCursorAdapter)
+> Reminders (SQLite + SimpleCursorAdapter) -> Room + Coroutin + MVVM
 - Ch05.zip
 - Ch06.zip
-> SimpleLayouts (Fragment)
+> SimpleLayouts (Fragment) -> phone / tablet UI
 - Ch08.zip
 - [<img alt="Fragment" src="https://developer.android.com/images/guide/fragments/fragment-screen-sizes.png">](https://developer.android.com/images/guide/fragments/fragment-screen-sizes.png)
 > Currencies (Network (http, Json, AsyncTask) + ActivityInstrumentationTestCase2)
