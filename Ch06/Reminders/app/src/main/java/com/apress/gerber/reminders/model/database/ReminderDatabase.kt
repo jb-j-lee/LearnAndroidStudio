@@ -6,28 +6,57 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.apress.gerber.reminders.model.database.dao.ReminderDao
-import com.apress.gerber.reminders.model.database.entity.Reminder
+import com.apress.gerber.reminders.BuildConfig
+import com.apress.gerber.reminders.model.dao.ReminderDao
+import com.apress.gerber.reminders.model.entity.Reminder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Database(entities = [Reminder::class], version = 1, exportSchema = false)
 abstract class ReminderDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
 
-    companion object {
-        //TODO Modify Database name
-        private const val DATABASE_NAME = "MyReminderDatabase.db"
-        private var Instance: ReminderDatabase? = null
+    private class ReminderCallback(private val coroutineScope: CoroutineScope) : RoomDatabase.Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
 
-        fun getInstance(context: Context): ReminderDatabase? {
-            if (Instance == null) {
+            //TODO makeDummy
+            if (!BuildConfig.DEBUG) {
+                return
+            }
+
+            INSTANCE?.let {
+                coroutineScope.launch {
+                    makeDummy(it.reminderDao())
+                }
+            }
+        }
+
+        suspend fun makeDummy(reminderDao: ReminderDao) {
+            reminderDao.deleteAll()
+
+            for (i in 1..20) {
+                reminderDao.insert(Reminder(i, "TEST $i", i % 2))
+            }
+            reminderDao.insert(Reminder(100, "ReminderCallback 100", 1))
+            reminderDao.insert(Reminder(101, "ReminderCallback 101", 0))
+        }
+    }
+
+    companion object {
+        private const val DATABASE_NAME = "MyReminderDatabase.db"
+        private var INSTANCE: ReminderDatabase? = null
+
+        fun getInstance(context: Context, coroutineScope: CoroutineScope): ReminderDatabase? {
+            if (INSTANCE == null) {
                 synchronized(ReminderDatabase::class) {
-                    Instance = Room.databaseBuilder(context, ReminderDatabase::class.java, DATABASE_NAME)
-                        //TODO Migration
+                    INSTANCE = Room.databaseBuilder(context, ReminderDatabase::class.java, DATABASE_NAME)
+                        .addCallback(ReminderCallback(coroutineScope))
                         .addMigrations(MigrateUp)
                         .build()
                 }
             }
-            return Instance
+            return INSTANCE
         }
     }
 

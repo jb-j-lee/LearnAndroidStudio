@@ -1,10 +1,11 @@
-package com.apress.gerber.reminders.model.database.dao
+package com.apress.gerber.reminders.model.dao
 
 import android.database.Cursor
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.apress.gerber.reminders.model.database.entity.Reminder
+import com.apress.gerber.reminders.model.entity.Reminder
 
 @Dao
 interface ReminderDao : BaseDao<Reminder> {
@@ -13,7 +14,7 @@ interface ReminderDao : BaseDao<Reminder> {
     }
 
     @Query("SELECT * FROM $TABLE_NAME")
-    fun selectAll(): List<Reminder>?
+    fun selectAll(): LiveData<List<Reminder>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE _id = :id")
     fun selectById(id: Int): Reminder?

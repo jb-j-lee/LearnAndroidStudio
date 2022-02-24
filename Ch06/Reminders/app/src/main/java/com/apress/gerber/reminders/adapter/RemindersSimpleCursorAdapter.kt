@@ -1,4 +1,4 @@
-package com.apress.gerber.reminders.view
+package com.apress.gerber.reminders.adapter
 
 import android.content.Context
 import android.database.Cursor

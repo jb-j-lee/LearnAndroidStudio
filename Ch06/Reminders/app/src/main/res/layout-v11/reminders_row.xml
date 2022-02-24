@@ -2,43 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/dark_grey"
-    android:orientation="vertical">
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:orientation="horizontal">
 
-    <LinearLayout
+    <android.view.View
+        android:id="@+id/row_tab"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:background="@color/green" />
+
+    <TextView
+        android:id="@+id/row_text"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?android:attr/activatedBackgroundIndicator"
-        android:orientation="horizontal">
-
-        <android.view.View
-            android:id="@+id/row_tab"
-            android:layout_width="10dp"
-            android:layout_height="match_parent"
-            android:background="@color/green" />
-
-        <TextView
-            android:id="@+id/row_text"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:text="Reminder Text"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <view
-        class="android.view.View"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#000" />
-
-    <view
-        class="android.view.View"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#333" />
+        android:layout_height="50dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:text="Reminder Text"
+        android:textSize="18sp" />
 </LinearLayout>

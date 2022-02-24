@@ -1,4 +1,4 @@
-package com.apress.gerber.reminders.model.database.dao
+package com.apress.gerber.reminders.model.dao
 
 import androidx.room.Delete
 import androidx.room.Insert
