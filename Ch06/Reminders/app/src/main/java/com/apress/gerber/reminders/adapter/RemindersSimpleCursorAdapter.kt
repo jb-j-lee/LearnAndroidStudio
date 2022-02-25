@@ -26,9 +26,9 @@ class RemindersSimpleCursorAdapter(
         }
         holder as ViewHolder
         if (cursor.getInt(holder.colImp) > 0) {
-            holder.listTab!!.setBackgroundColor(context.resources.getColor(R.color.orange))
+            holder.listTab!!.setBackgroundColor(context.resources.getColor(android.R.color.holo_orange_dark))
         } else {
-            holder.listTab!!.setBackgroundColor(context.resources.getColor(R.color.green))
+            holder.listTab!!.setBackgroundColor(context.resources.getColor(android.R.color.holo_green_dark))
         }
     }
 

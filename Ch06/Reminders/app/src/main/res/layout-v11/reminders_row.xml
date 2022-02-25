@@ -9,7 +9,7 @@
         android:id="@+id/row_tab"
         android:layout_width="10dp"
         android:layout_height="match_parent"
-        android:background="@color/green" />
+        android:background="@android:color/holo_green_dark" />
 
     <TextView
         android:id="@+id/row_text"

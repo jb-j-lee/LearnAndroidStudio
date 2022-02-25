@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Reminders</string>
-    <string name="new_reminder">new Reminder</string>
-    <string name="exit">exit</string>
+    <string name="app_name">"Reminders"</string>
+    <string name="new_reminder">"new Reminder"</string>
+    <string name="exit">"exit"</string>
+
+    <string name="dialog_title_create">"New Reminder"</string>
+    <string name="dialog_title_update">"Edit Reminder"</string>
+    <string name="dialog_title_delete">"Delete Reminder"</string>
 </resources>

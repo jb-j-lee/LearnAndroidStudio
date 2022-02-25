@@ -2,16 +2,26 @@ package com.apress.gerber.reminders.model.dao
 
 import android.database.Cursor
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.apress.gerber.reminders.model.entity.Reminder
 
 @Dao
-interface ReminderDao : BaseDao<Reminder> {
+interface ReminderDao {
     companion object {
         const val TABLE_NAME = "reminder"
     }
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(obj: Reminder)
+
+    @Delete
+    suspend fun delete(obj: Reminder)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(obj: Reminder)
+
+    @Insert
+    suspend fun insertAll(obj: List<Reminder>)
 
     @Query("SELECT * FROM $TABLE_NAME")
     fun selectAll(): LiveData<List<Reminder>>

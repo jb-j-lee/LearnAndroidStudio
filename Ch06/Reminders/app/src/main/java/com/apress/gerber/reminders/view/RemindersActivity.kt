@@ -2,12 +2,15 @@ package com.apress.gerber.reminders.view
 
 import android.annotation.TargetApi
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.*
 import android.widget.AbsListView.MultiChoiceModeListener
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -15,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.apress.gerber.reminders.R
 import com.apress.gerber.reminders.adapter.RemindersSimpleCursorAdapter
 import com.apress.gerber.reminders.databinding.ActivityRemindersBinding
+import com.apress.gerber.reminders.databinding.DialogCustomBinding
 import com.apress.gerber.reminders.model.entity.Reminder
 import com.apress.gerber.reminders.viewmodel.ReminderViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +39,7 @@ class RemindersActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        val actionBar = supportActionBar
-        actionBar?.setHomeButtonEnabled(true)
-        actionBar?.setDisplayShowHomeEnabled(true)
-        actionBar?.setIcon(R.mipmap.ic_launcher)
-
         CoroutineScope(Dispatchers.IO).launch {
-            //TODO
             val cursor = viewModel.selectCursor()
 
             withContext(Dispatchers.Main) {
@@ -51,26 +49,22 @@ class RemindersActivity : AppCompatActivity() {
                 val to = intArrayOf(
                     R.id.row_text
                 )
-                mCursorAdapter = RemindersSimpleCursorAdapter( // 컨텍스트
-                    this@RemindersActivity,  // 행의 레이아웃
-                    R.layout.reminders_row,  // 커서
-                    cursor,  // 데이터베이스에 정의된 칼럼
-                    from,  // 레이아웃의 뷰 id
-                    to,  // 플래그이며 사용하지 않음
+                mCursorAdapter = RemindersSimpleCursorAdapter(
+                    this@RemindersActivity,
+                    R.layout.reminders_row,
+                    cursor,
+                    from,
+                    to,
                     0
                 )
-
-                // 이제는 cursorAdapter(MVC 의 컨트롤러)가
-                // db(MVC 의 모델)의 데이터로 ListView(MVC 의 뷰)를 갱신한다.
                 binding.remindersListView.adapter = mCursorAdapter
             }
         }
 
-        // ListView 의 항목을 터치할 때 이 리스너의 onItemClick() 메서드가 호출된다
         binding.remindersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, masterListPosition: Int, _: Long ->
             val builder = AlertDialog.Builder(this@RemindersActivity)
             val modeListView = ListView(this@RemindersActivity)
-            val modes = arrayOf("Edit Reminder", "Delete Reminder")
+            val modes = arrayOf(getString(R.string.dialog_title_update), getString(R.string.dialog_title_delete))
             val modeAdapter = ArrayAdapter(
                 this@RemindersActivity,
                 android.R.layout.simple_list_item_1, android.R.id.text1,
@@ -81,7 +75,6 @@ class RemindersActivity : AppCompatActivity() {
             val dialog: Dialog = builder.create()
             dialog.show()
             modeListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-                // 메모 데이터 변경
                 if (position == 0) {
                     val nId = getIdFromPosition(masterListPosition)
                     CoroutineScope(Dispatchers.IO).launch {
@@ -90,7 +83,6 @@ class RemindersActivity : AppCompatActivity() {
                             fireCustomDialog(reminder)
                         }
                     }
-                    // 메모 데이터 삭제
                 } else {
                     CoroutineScope(Dispatchers.IO).launch {
                         viewModel.deleteById(getIdFromPosition(masterListPosition))
@@ -152,12 +144,11 @@ class RemindersActivity : AppCompatActivity() {
         })
     }
 
-    private fun getIdFromPosition(nC: Int): Int {
-        return mCursorAdapter!!.getItemId(nC).toInt()
+    private fun getIdFromPosition(position: Int): Int {
+        return mCursorAdapter!!.getItemId(position).toInt()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // 메뉴를 인플레이트하여 객체로 생성한다
         menuInflater.inflate(R.menu.menu_reminders, menu)
         return true
     }
@@ -165,7 +156,6 @@ class RemindersActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_new -> {
-                // 새로운 메모 생성
                 fireCustomDialog(null)
                 true
             }
@@ -178,35 +168,27 @@ class RemindersActivity : AppCompatActivity() {
     }
 
     private fun fireCustomDialog(reminder: Reminder?) {
-        // 커스텀 대화상자
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_custom)
-        val titleView = dialog.findViewById<View>(R.id.custom_title) as TextView
-        val editCustom = dialog.findViewById<View>(R.id.custom_edit_reminder) as EditText
-        val commitButton = dialog.findViewById<View>(R.id.custom_button_commit) as Button
-        val checkBox = dialog.findViewById<View>(R.id.custom_check_box) as CheckBox
         val isEditOperation = reminder != null
-        if (isEditOperation) {
-            titleView.text = "Edit Reminder"
-            checkBox.isChecked = reminder?.important == 1
-            editCustom.setText(reminder?.content)
-        }
-        commitButton.setOnClickListener {
-            val reminderText = editCustom.text.toString()
+
+        val builder = AlertDialog.Builder(this, R.style.AppDialog)
+
+        val view: DialogCustomBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_custom, null, false);
+        builder.setView(view.root)
+
+        val alertDialog = builder.create()
+
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Commit") { dialog, _ ->
+            val reminderText = view.edittext.text.toString()
             if (isEditOperation) {
                 val reminderEdited = Reminder(
-                    reminder!!._id,
-                    reminderText, if (checkBox.isChecked) 1 else 0
+                    reminderText, if (view.checkbox.isChecked) 1 else 0
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     viewModel.update(reminderEdited)
                 }
-
-                // 새로운 메모 생성
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.insert(Reminder(0, reminderText, if (checkBox.isChecked) 1 else 0))
+                    viewModel.insert(Reminder(reminderText, if (view.checkbox.isChecked) 1 else 0))
                 }
             }
             CoroutineScope(Dispatchers.IO).launch {
@@ -217,9 +199,22 @@ class RemindersActivity : AppCompatActivity() {
             }
             dialog.dismiss()
         }
-        val buttonCancel = dialog.findViewById<View>(R.id.custom_button_cancel) as Button
-        buttonCancel.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel") { dialog, _ -> dialog.dismiss() }
+
+        val editCustom = view.edittext
+        val checkBox = view.checkbox
+
+        if (isEditOperation) {
+            alertDialog.setTitle(R.string.dialog_title_update)
+            checkBox.isChecked = reminder?.important == 1
+            editCustom.setText(reminder?.content)
+        } else {
+            alertDialog.setTitle(R.string.dialog_title_create)
+        }
+
+//        val buttonCancel = dialog.findViewById<View>(R.id.custom_button_cancel) as Button
+//        buttonCancel.setOnClickListener { dialog.dismiss() }
+        alertDialog.show()
     }
 
     fun test(): String {

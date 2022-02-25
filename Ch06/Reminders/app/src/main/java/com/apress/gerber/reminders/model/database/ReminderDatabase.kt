@@ -36,10 +36,10 @@ abstract class ReminderDatabase : RoomDatabase() {
             reminderDao.deleteAll()
 
             for (i in 1..20) {
-                reminderDao.insert(Reminder(i, "TEST $i", i % 2))
+                reminderDao.insert(Reminder("TEST $i", i % 2))
             }
-            reminderDao.insert(Reminder(100, "ReminderCallback 100", 1))
-            reminderDao.insert(Reminder(101, "ReminderCallback 101", 0))
+            reminderDao.insert(Reminder("ReminderCallback 100", 1))
+            reminderDao.insert(Reminder("ReminderCallback 101", 0))
         }
     }
 

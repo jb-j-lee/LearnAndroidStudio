@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="titleTextColor">#000</color>
-    <color name="overflowColor">#000</color>
+    <color name="titleTextColor">#FFF</color>
+    <color name="overflowColor">#FFF</color>
 </resources>
