@@ -4,7 +4,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.apress.gerber.reminders.model.database.ReminderDatabase
+import com.apress.gerber.reminders.model.entity.Reminder
 import com.apress.gerber.reminders.view.RemindersActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -41,7 +46,7 @@ class ReminderInstrumentedTest {
     }
 
     @Test
-    fun testInsert() {
+    fun test() {
         val result = activityRule.activity.test()
 
 //        openActionBarOverflowOrOptionsMenu(activityRule.activity)
@@ -50,6 +55,15 @@ class ReminderInstrumentedTest {
         assertEquals(testString, result)
     }
 
+    @Test
+    fun testInsert() = runBlocking {
+        ReminderDatabase.getInstance(activityRule.activity, CoroutineScope(Dispatchers.IO))?.reminderDao()?.deleteAll()
+
+        val reminder = Reminder(testString, 0)
+        ReminderDatabase.getInstance(activityRule.activity, CoroutineScope(Dispatchers.IO))?.reminderDao()?.insert(reminder)
+        val result = ReminderDatabase.getInstance(activityRule.activity, CoroutineScope(Dispatchers.IO))?.reminderDao()?.selectByElement(testString)
+        assertEquals(result, reminder)
+    }
 //    @Test
 //    fun insertTest() {
 //        // Context of the app under test.

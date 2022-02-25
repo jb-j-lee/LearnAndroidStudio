@@ -1,7 +1,6 @@
 package com.apress.gerber.reminders.view
 
 import android.annotation.TargetApi
-import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
@@ -44,70 +43,33 @@ class RemindersActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 val from = arrayOf<String?>(
-                    RemindersSimpleCursorAdapter.COL_CONTENT
+                        RemindersSimpleCursorAdapter.COL_CONTENT
                 )
                 val to = intArrayOf(
-                    R.id.row_text
+                        R.id.row_text
                 )
                 mCursorAdapter = RemindersSimpleCursorAdapter(
-                    this@RemindersActivity,
-                    R.layout.reminders_row,
-                    cursor,
-                    from,
-                    to,
-                    0
+                        this@RemindersActivity,
+                        R.layout.reminders_row,
+                        cursor,
+                        from,
+                        to,
+                        0
                 )
                 binding.remindersListView.adapter = mCursorAdapter
             }
         }
 
         binding.remindersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, masterListPosition: Int, _: Long ->
-            val builder = AlertDialog.Builder(this@RemindersActivity)
-            val modeListView = ListView(this@RemindersActivity)
-            val modes = arrayOf(getString(R.string.dialog_title_update), getString(R.string.dialog_title_delete))
-            val modeAdapter = ArrayAdapter(
-                this@RemindersActivity,
-                android.R.layout.simple_list_item_1, android.R.id.text1,
-                modes
-            )
-            modeListView.adapter = modeAdapter
-            builder.setView(modeListView)
-            val dialog: Dialog = builder.create()
-            dialog.show()
-            modeListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-                if (position == 0) {
-                    val nId = getIdFromPosition(masterListPosition)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val reminder = viewModel.selectById(nId)
-                        withContext(Dispatchers.Main) {
-                            fireCustomDialog(reminder)
-                        }
-                    }
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.deleteById(getIdFromPosition(masterListPosition))
-
-                        val cursor = viewModel.selectCursor()
-
-                        withContext(Dispatchers.Main) {
-                            mCursorAdapter?.changeCursor(cursor)
-                        }
-                    }
-                }
-                dialog.dismiss()
-            }
+            fetchActionDialog(masterListPosition)
         }
         binding.remindersListView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
         binding.remindersListView.setMultiChoiceModeListener(object : MultiChoiceModeListener {
-            override fun onItemCheckedStateChanged(
-                mode: ActionMode, position: Int,
-                id: Long, checked: Boolean
-            ) {
+            override fun onItemCheckedStateChanged(mode: ActionMode, position: Int, id: Long, checked: Boolean) {
             }
 
             override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-                val inflater = mode.menuInflater
-                inflater.inflate(R.menu.cam_menu, menu)
+                mode.menuInflater.inflate(R.menu.cam_menu, menu)
                 return true
             }
 
@@ -155,8 +117,19 @@ class RemindersActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_new -> {
-                fireCustomDialog(null)
+            R.id.action_create -> {
+                fetchEditReminderDialog(null)
+                true
+            }
+            R.id.action_delete_all -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.deleteAll()
+
+                    val cursor = viewModel.selectCursor()
+                    withContext(Dispatchers.Main) {
+                        mCursorAdapter?.changeCursor(cursor)
+                    }
+                }
                 true
             }
             R.id.action_exit -> {
@@ -167,54 +140,73 @@ class RemindersActivity : AppCompatActivity() {
         }
     }
 
-    private fun fireCustomDialog(reminder: Reminder?) {
-        val isEditOperation = reminder != null
+    private fun fetchEditReminderDialog(reminder: Reminder?) {
+        val builder = AlertDialog.Builder(this)
 
-        val builder = AlertDialog.Builder(this, R.style.AppDialog)
+        val binding: DialogCustomBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_custom, null, false)
+        builder.setView(binding.root)
 
-        val view: DialogCustomBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_custom, null, false);
-        builder.setView(view.root)
+        val isEditMode = reminder != null
+        builder.setTitle(if (isEditMode) R.string.dialog_title_update else R.string.dialog_title_create)
+        if (isEditMode) {
+            binding.content = reminder?.content
+            binding.important = reminder?.important == 1
+        }
 
         val alertDialog = builder.create()
 
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Commit") { dialog, _ ->
-            val reminderText = view.edittext.text.toString()
-            if (isEditOperation) {
-                val reminderEdited = Reminder(
-                    reminderText, if (view.checkbox.isChecked) 1 else 0
-                )
-                CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.update(reminderEdited)
-                }
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.insert(Reminder(reminderText, if (view.checkbox.isChecked) 1 else 0))
-                }
-            }
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.dialog_button_ok)) { dialog, _ ->
             CoroutineScope(Dispatchers.IO).launch {
+                val item = Reminder(binding.content.toString(), if (binding.important) 1 else 0)
+                if (isEditMode) {
+                    item.id = reminder!!.id
+                    viewModel.update(item)
+                } else {
+                    viewModel.insert(item)
+                }
+
                 val cursor = viewModel.selectCursor()
                 withContext(Dispatchers.Main) {
                     mCursorAdapter?.changeCursor(cursor)
+                    dialog.dismiss()
+                }
+            }
+        }
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dialog_button_cancel)) { dialog, _ -> dialog.dismiss() }
+
+        alertDialog.show()
+    }
+
+    private fun fetchActionDialog(masterListPosition: Int) {
+        val builder = AlertDialog.Builder(this)
+
+        val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1, android.R.id.text1,
+                arrayOf(getString(R.string.dialog_title_update), getString(R.string.dialog_title_delete))
+        )
+        builder.setAdapter(adapter) { dialog, which ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val id = getIdFromPosition(masterListPosition)
+                if (which == 0) {
+                    val reminder = viewModel.selectById(id)
+                    withContext(Dispatchers.Main) {
+                        fetchEditReminderDialog(reminder)
+                    }
+                } else {
+                    viewModel.deleteById(id)
+
+                    val cursor = viewModel.selectCursor()
+                    withContext(Dispatchers.Main) {
+                        mCursorAdapter?.changeCursor(cursor)
+                    }
                 }
             }
             dialog.dismiss()
         }
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel") { dialog, _ -> dialog.dismiss() }
 
-        val editCustom = view.edittext
-        val checkBox = view.checkbox
-
-        if (isEditOperation) {
-            alertDialog.setTitle(R.string.dialog_title_update)
-            checkBox.isChecked = reminder?.important == 1
-            editCustom.setText(reminder?.content)
-        } else {
-            alertDialog.setTitle(R.string.dialog_title_create)
-        }
-
-//        val buttonCancel = dialog.findViewById<View>(R.id.custom_button_cancel) as Button
-//        buttonCancel.setOnClickListener { dialog.dismiss() }
-        alertDialog.show()
+        val dialog = builder.create()
+        dialog.show()
     }
 
     fun test(): String {

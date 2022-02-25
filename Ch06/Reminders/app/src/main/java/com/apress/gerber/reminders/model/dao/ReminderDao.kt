@@ -12,16 +12,16 @@ interface ReminderDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(obj: Reminder)
+    suspend fun insert(reminder: Reminder)
 
     @Delete
-    suspend fun delete(obj: Reminder)
+    suspend fun delete(reminder: Reminder)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(obj: Reminder)
+    suspend fun update(reminder: Reminder)
 
     @Insert
-    suspend fun insertAll(obj: List<Reminder>)
+    suspend fun insertAll(reminders: List<Reminder>)
 
     @Query("SELECT * FROM $TABLE_NAME")
     fun selectAll(): LiveData<List<Reminder>>

@@ -20,9 +20,4 @@
     <style name="OverflowStyle" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="tint">@color/overflowColor</item>
     </style>
-
-    <style name="AppDialog" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="windowNoTitle">true</item>
-        <item name="android:layout_width">?android:compatibleWidthLimitDp</item>
-    </style>
 </resources>
