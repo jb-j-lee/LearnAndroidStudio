@@ -64,6 +64,14 @@ class ReminderInstrumentedTest {
         val result = ReminderDatabase.getInstance(activityRule.activity, CoroutineScope(Dispatchers.IO))?.reminderDao()?.selectByElement(testString)
         assertEquals(result, reminder)
     }
+
+//    ViewBinding, DataBinding
+//    https://dideworld.tistory.com/20
+//    https://dev-soyeon.tistory.com/5
+
+//    안드로이드 MVVM 패턴 익히기
+//    https://seoplee.tistory.com/5?category=930919
+//    https://seoplee.tistory.com/15?category=930919
 //    @Test
 //    fun insertTest() {
 //        // Context of the app under test.

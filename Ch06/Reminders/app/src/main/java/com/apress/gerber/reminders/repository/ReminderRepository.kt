@@ -4,12 +4,18 @@ import android.database.Cursor
 import androidx.annotation.WorkerThread
 import com.apress.gerber.reminders.model.dao.ReminderDao
 import com.apress.gerber.reminders.model.entity.Reminder
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
-class ReminderRepository(private val reminderDao: ReminderDao) {
+class ReminderRepository(
+    private val reminderDao: ReminderDao,
+    private val ioDispatcher: CoroutineDispatcher
+) {
     val reminders = reminderDao.selectAll()
 
+    //TODO unit test 를 위한
     @WorkerThread
-    suspend fun insert(reminder: Reminder) {
+    suspend fun insert(reminder: Reminder) = withContext(ioDispatcher) {
         reminderDao.insert(reminder)
     }
 

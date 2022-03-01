@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:orientation="horizontal">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.view.View
-        android:id="@+id/row_tab"
-        android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:background="@android:color/holo_green_dark" />
+    <data>
 
-    <TextView
-        android:id="@+id/row_text"
+        <variable
+            name="reminder"
+            type="com.apress.gerber.reminders.model.entity.Reminder" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:padding="10dp"
-        android:text="Reminder Text"
-        android:textSize="18sp" />
-</LinearLayout>
+        android:background="?android:attr/activatedBackgroundIndicator"
+        android:orientation="horizontal">
+
+        <android.view.View
+            android:id="@+id/row_tab"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:background="@{reminder.important == 1 ? @android:color/holo_orange_dark : @android:color/holo_green_dark}" />
+
+        <TextView
+            android:id="@+id/row_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:text="@{reminder.content}"
+            android:textSize="18sp"
+            tools:text="@string/view_holder_hint" />
+    </LinearLayout>
+</layout>

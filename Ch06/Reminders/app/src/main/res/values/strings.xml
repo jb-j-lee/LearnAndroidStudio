@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">"Reminders"</string>
+    <string name="view_holder_hint">"Reminder Text"</string>
+
     <string name="create_reminder">"create reminder"</string>
     <string name="delete_reminder">"delete reminder"</string>
+    <string name="delete_all_reminder">"delete all reminder"</string>
     <string name="exit">"exit"</string>
 
-    <string name="dialog_title_create">"New Reminder"</string>
-    <string name="dialog_title_update">"Edit Reminder"</string>
-    <string name="dialog_title_delete">"Delete Reminder"</string>
-
+    <string name="dialog_create">"New Reminder"</string>
+    <string name="dialog_update">"Edit Reminder"</string>
+    <string name="dialog_delete">"Delete Reminder"</string>
     <string name="dialog_import">"Important"</string>
     <string name="dialog_button_ok">"Commit"</string>
     <string name="dialog_button_cancel">"Cancel"</string>

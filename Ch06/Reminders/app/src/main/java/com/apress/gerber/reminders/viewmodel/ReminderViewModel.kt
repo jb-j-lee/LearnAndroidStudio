@@ -16,11 +16,12 @@ import kotlinx.coroutines.launch
 
 class ReminderViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ReminderRepository
-    private val reminders: LiveData<List<Reminder>>
+    val reminders: LiveData<List<Reminder>>
 
     init {
-        val reminderDao = ReminderDatabase.getInstance(application, CoroutineScope(Dispatchers.IO))?.reminderDao() as ReminderDao
-        repository = ReminderRepository(reminderDao)
+        val reminderDao = ReminderDatabase.getInstance(application, CoroutineScope(Dispatchers.IO))
+            ?.reminderDao() as ReminderDao
+        repository = ReminderRepository(reminderDao, Dispatchers.IO)
         reminders = repository.reminders
     }
 

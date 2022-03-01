@@ -1,8 +1,6 @@
 package com.apress.gerber.reminders.view
 
-import android.annotation.TargetApi
 import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.AbsListView.MultiChoiceModeListener
@@ -15,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.apress.gerber.reminders.R
+import com.apress.gerber.reminders.adapter.RemindersAdapter
 import com.apress.gerber.reminders.adapter.RemindersSimpleCursorAdapter
 import com.apress.gerber.reminders.databinding.ActivityRemindersBinding
 import com.apress.gerber.reminders.databinding.DialogCustomBinding
@@ -30,13 +29,15 @@ class RemindersActivity : AppCompatActivity() {
 
     private val viewModel by lazy { ViewModelProvider(this)[ReminderViewModel::class.java] }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val binding: ActivityRemindersBinding = DataBindingUtil.setContentView(this, R.layout.activity_reminders)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        val adapter = RemindersAdapter()
+        binding.recyclerview.adapter = adapter
 
         CoroutineScope(Dispatchers.IO).launch {
             val cursor = viewModel.selectCursor()
@@ -56,15 +57,15 @@ class RemindersActivity : AppCompatActivity() {
                         to,
                         0
                 )
-                binding.remindersListView.adapter = mCursorAdapter
+                binding.listview.adapter = mCursorAdapter
             }
         }
 
-        binding.remindersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, masterListPosition: Int, _: Long ->
+        binding.listview.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, masterListPosition: Int, _: Long ->
             fetchActionDialog(masterListPosition)
         }
-        binding.remindersListView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        binding.remindersListView.setMultiChoiceModeListener(object : MultiChoiceModeListener {
+        binding.listview.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+        binding.listview.setMultiChoiceModeListener(object : MultiChoiceModeListener {
             override fun onItemCheckedStateChanged(mode: ActionMode, position: Int, id: Long, checked: Boolean) {
             }
 
@@ -83,7 +84,7 @@ class RemindersActivity : AppCompatActivity() {
                         CoroutineScope(Dispatchers.IO).launch {
                             var count = mCursorAdapter!!.count - 1
                             while (count >= 0) {
-                                if (binding.remindersListView.isItemChecked(count)) {
+                                if (binding.listview.isItemChecked(count)) {
                                     viewModel.deleteById(getIdFromPosition(count))
                                 }
                                 count--
@@ -147,7 +148,7 @@ class RemindersActivity : AppCompatActivity() {
         builder.setView(binding.root)
 
         val isEditMode = reminder != null
-        builder.setTitle(if (isEditMode) R.string.dialog_title_update else R.string.dialog_title_create)
+        builder.setTitle(if (isEditMode) R.string.dialog_update else R.string.dialog_create)
         if (isEditMode) {
             binding.content = reminder?.content
             binding.important = reminder?.important == 1
@@ -183,7 +184,7 @@ class RemindersActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1, android.R.id.text1,
-                arrayOf(getString(R.string.dialog_title_update), getString(R.string.dialog_title_delete))
+                arrayOf(getString(R.string.dialog_update), getString(R.string.dialog_delete))
         )
         builder.setAdapter(adapter) { dialog, which ->
             CoroutineScope(Dispatchers.IO).launch {

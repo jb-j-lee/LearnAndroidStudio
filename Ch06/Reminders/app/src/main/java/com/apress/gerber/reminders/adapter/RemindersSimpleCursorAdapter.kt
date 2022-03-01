@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.cursoradapter.widget.SimpleCursorAdapter
 import com.apress.gerber.reminders.R
 
+@Deprecated("Deprecated", ReplaceWith("",""), DeprecationLevel.WARNING)
 class RemindersSimpleCursorAdapter(
     context: Context?, layout: Int, c: Cursor?,
     from: Array<String?>?, to: IntArray?, flags: Int

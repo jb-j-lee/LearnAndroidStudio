@@ -22,7 +22,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:autofillHints="@string/view_holder_hint"
             android:gravity="start"
+            android:inputType="text"
+            android:labelFor="@id/edittext"
             android:text="@={content}">
 
             <requestFocus />

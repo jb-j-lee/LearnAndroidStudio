@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_delete_all"
         android:orderInCategory="200"
-        android:title="@string/delete_reminder"
+        android:title="@string/delete_all_reminder"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_exit"
